@@ -57,6 +57,23 @@ public class ParkingDataDAOImpl<T extends Vehicle> implements ParkingDataDAO<T>
 		}
 	}
 	
+	@Override
+	public int checkAvailableSolts(int level, T vehicle)
+	{
+		return levelParkingMap.get(level).checkAvailableSolts(vehicle);
+	}
+	
+	@Override
+	public boolean leaveCar(int level, int slotNumber)
+	{
+		return levelParkingMap.get(level).leaveCar(slotNumber);
+	}
+	
+	public Object clone() throws CloneNotSupportedException
+	{
+		throw new CloneNotSupportedException();
+	}
+	
 	public void doCleanup()
 	{
 		for (ParkingLevelDataDAO<T> levelDataManager : levelParkingMap.values())

@@ -11,6 +11,9 @@ import com.gojek.parkinglot.model.Vehicle;
  */
 public interface ParkingLevelDataDAO<T extends Vehicle>
 {
+	int checkAvailableSolts(T vehicle);
+	
+	public boolean leaveCar(int slotNumber);
 	
 	public void doCleanUp();
 	

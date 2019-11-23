@@ -1,5 +1,15 @@
 package com.gojek.parkinglot;
 
+/**
+ * @author Mallikarjun
+ * 
+ * 
+ *         Test Class
+ *
+ */
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -11,6 +21,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.gojek.parkinglot.exception.ErrorCode;
+import com.gojek.parkinglot.exception.ParkingLotException;
+import com.gojek.parkinglot.model.Car;
 import com.gojek.parkinglot.service.IParkingLotService;
 import com.gojek.parkinglot.service.impl.ParkingLotServiceImpl;
 
@@ -47,5 +60,6 @@ public class TestMain
 		assertTrue("createdparkinglotwith65slots".equalsIgnoreCase(outContent.toString().trim().replace(" ", "")));
 		instance.doCleanup();
 	}
+	
 	
 }

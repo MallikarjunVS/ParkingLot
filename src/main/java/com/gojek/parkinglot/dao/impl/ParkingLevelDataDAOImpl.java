@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.gojek.parkinglot.constants.Constants;
 import com.gojek.parkinglot.dao.ParkingLevelDataDAO;
 import com.gojek.parkinglot.model.Vehicle;
 import com.gojek.parkinglot.model.strategy.NearestParkingLotStrategy;
@@ -27,7 +28,6 @@ public class ParkingLevelDataDAOImpl<T extends Vehicle> implements ParkingLevelD
 	private AtomicInteger	level			= new AtomicInteger(0);
 	private AtomicInteger	capacity		= new AtomicInteger();
 	private AtomicInteger	availability	= new AtomicInteger();
-	
 	// Allocation Strategy for parking
 	private ParkingStrategy parkingStrategy;
 	// this is per level - slot - vehicle
@@ -67,6 +67,45 @@ public class ParkingLevelDataDAOImpl<T extends Vehicle> implements ParkingLevelD
 			slotVehicleMap.put(i, Optional.empty());
 			parkingStrategy.add(i);
 		}
+	}
+	
+	// This method return available slots
+	
+	@Override
+	public int checkAvailableSolts(T vehicle)
+	{
+		int availableSlot;
+		if (availability.get() == 0)
+		{
+			return Constants.NOT_AVAILABLE;
+		}
+		else
+		{
+			availableSlot = parkingStrategy.getSlot();
+			if (slotVehicleMap.containsValue(Optional.of(vehicle)))
+				return Constants.VEHICLE_ALREADY_EXIST;
+			
+			slotVehicleMap.put(availableSlot, Optional.of(vehicle));
+			availability.decrementAndGet();
+			parkingStrategy.removeSlot(availableSlot);
+		}
+		return availableSlot;
+	}
+	
+	@Override
+	public boolean leaveCar(int slotNumber)
+	{
+		if (!slotVehicleMap.get(slotNumber).isPresent()) // Slot empty
+			return false;
+		availability.incrementAndGet();
+		parkingStrategy.add(slotNumber);
+		slotVehicleMap.put(slotNumber, Optional.empty());
+		return true;
+	}
+	
+	public int getAvailableSlotsCount()
+	{
+		return availability.get();
 	}
 	
 	public Object clone() throws CloneNotSupportedException

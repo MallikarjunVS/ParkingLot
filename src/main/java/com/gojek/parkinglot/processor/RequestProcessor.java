@@ -6,6 +6,7 @@ package com.gojek.parkinglot.processor;
 import com.gojek.parkinglot.constants.Constants;
 import com.gojek.parkinglot.exception.ErrorCode;
 import com.gojek.parkinglot.exception.ParkingLotException;
+import com.gojek.parkinglot.model.Car;
 import com.gojek.parkinglot.service.IAbstractService;
 import com.gojek.parkinglot.service.IParkingLotService;
 
@@ -43,22 +44,31 @@ public class RequestProcessor implements IAbstractProcessor
 				}
 				break;
 			case Constants.PARK:
-				// ToDo
+				parkingService.parkVehicle(level, new Car(inputs[1], inputs[2]));
 				break;
 			case Constants.LEAVE:
-				// ToDo
+				try
+				{
+					int slotNumber = Integer.parseInt(inputs[1]);
+					parkingService.unParkVehicle(level, slotNumber);
+				}
+				catch (NumberFormatException e)
+				{
+					throw new ParkingLotException(
+							ErrorCode.INVALID_VALUE.getMessage().replace("{variable}", "slot_number"));
+				}
 				break;
 			case Constants.STATUS:
-				// ToDo
+				// ToDO
 				break;
 			case Constants.REG_NUMBER_FOR_CARS_WITH_COLOR:
-				// ToDo
+				// ToDO
 				break;
 			case Constants.SLOTS_NUMBER_FOR_CARS_WITH_COLOR:
-				// ToDo
+				// ToDO
 				break;
 			case Constants.SLOTS_NUMBER_FOR_REG_NUMBER:
-				// ToDo
+				// ToDO
 				break;
 			default:
 				break;
