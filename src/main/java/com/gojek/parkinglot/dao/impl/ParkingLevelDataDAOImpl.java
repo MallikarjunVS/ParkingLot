@@ -3,6 +3,8 @@
  */
 package com.gojek.parkinglot.dao.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,12 +97,27 @@ public class ParkingLevelDataDAOImpl<T extends Vehicle> implements ParkingLevelD
 	@Override
 	public boolean leaveCar(int slotNumber)
 	{
-		if (!slotVehicleMap.get(slotNumber).isPresent()) // Slot empty
+		if (!slotVehicleMap.get(slotNumber).isPresent()) // Slot already empty
 			return false;
 		availability.incrementAndGet();
 		parkingStrategy.add(slotNumber);
 		slotVehicleMap.put(slotNumber, Optional.empty());
 		return true;
+	}
+	
+	@Override
+	public List<String> getStatus()
+	{
+		List<String> statusList = new ArrayList<>();
+		for (int i = 1; i <= capacity.get(); i++)
+		{
+			Optional<T> vehicle = slotVehicleMap.get(i);
+			if (vehicle.isPresent())
+			{
+				statusList.add(i + "\t\t" + vehicle.get().getVehicleRegNo() + "\t\t" + vehicle.get().getColor());
+			}
+		}
+		return statusList;
 	}
 	
 	public int getAvailableSlotsCount()

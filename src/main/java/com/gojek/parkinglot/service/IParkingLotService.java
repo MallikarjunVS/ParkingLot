@@ -21,5 +21,7 @@ public interface IParkingLotService extends IAbstractService
 	
 	public void unParkVehicle(int level, int slotNumber) throws ParkingLotException;
 	
+	public void getStatus(int level) throws ParkingLotException;
+	
 	public void doCleanup();
 }

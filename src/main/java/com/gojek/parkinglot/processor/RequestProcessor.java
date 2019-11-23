@@ -59,16 +59,16 @@ public class RequestProcessor implements IAbstractProcessor
 				}
 				break;
 			case Constants.STATUS:
-				// ToDO
+				parkingService.getStatus(level);
 				break;
 			case Constants.REG_NUMBER_FOR_CARS_WITH_COLOR:
-				// ToDO
+				// TODO
 				break;
 			case Constants.SLOTS_NUMBER_FOR_CARS_WITH_COLOR:
-				// ToDO
+				// TODO
 				break;
 			case Constants.SLOTS_NUMBER_FOR_REG_NUMBER:
-				// ToDO
+				// TODO
 				break;
 			default:
 				break;

@@ -109,9 +109,39 @@ public class ParkingLotServiceImpl implements IParkingLotService
 	}
 	
 	@Override
+	public void getStatus(int level) throws ParkingLotException
+	{
+		lock.readLock().lock();
+		validateParkingLot();
+		try
+		{
+			System.out.println("Slot No.\tRegistration No.\tColor");
+			List<String> statusList = parkingDataDAO.getStatus(level);
+			if (statusList.size() == 0)
+				System.out.println("Sorry, parking lot is empty.");
+			else
+			{
+				for (String statusSting : statusList)
+				{
+					System.out.println(statusSting);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			throw new ParkingLotException(ErrorCode.PROCESSING_ERROR.getMessage(), e);
+		}
+		finally
+		{
+			lock.readLock().unlock();
+		}
+	}
+	
+	@Override
 	public void doCleanup()
 	{
 		if (parkingDataDAO != null)
 			parkingDataDAO.doCleanup();
 	}
+	
 }
