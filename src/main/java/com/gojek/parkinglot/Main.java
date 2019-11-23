@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
-import org.owasp.esapi.reference.Log4JLogger;
 
 import com.gojek.parkinglot.exception.ErrorCode;
 import com.gojek.parkinglot.exception.ParkingLotException;
-import com.gojek.parkinglot.processor.AbstractProcessor;
+import com.gojek.parkinglot.processor.IAbstractProcessor;
 import com.gojek.parkinglot.processor.RequestProcessor;
-import com.gojek.parkinglot.service.impl.ParkingServiceImpl;
+import com.gojek.parkinglot.service.impl.ParkingLotServiceImpl;
 
 /**
  * @author Mallikarjun
@@ -26,17 +25,17 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Logger logger = Log4JLogger.getLogger(Main.class);
-		AbstractProcessor processor = new RequestProcessor();
-		processor.setService(new ParkingServiceImpl());
+		Logger logger = Logger.getLogger(Main.class);
+		IAbstractProcessor processor = new RequestProcessor();
+		processor.setService(new ParkingLotServiceImpl());
 		BufferedReader bufferReader = null;
 		String input = null;
 		try
 		{
 			System.out.println("\n\n\n\n\n");
-			System.out.println("===================================================================");
+			System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 			System.out.println("===================      GOJEK PARKING LOT APP     ====================");
-			System.out.println("===================================================================");
+			System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 			printUsage();
 			switch (args.length)
 			{
@@ -102,7 +101,7 @@ public class Main
 								}
 							}
 							else
-								logger.info("Incorrect Command Found at line: " + lineNo + " ,Input: " + input);
+								System.out.println("Incorrect Command Found at line: " + lineNo + " ,Input: " + input);
 							lineNo++;
 						}
 					}
