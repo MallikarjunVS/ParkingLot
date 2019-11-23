@@ -19,6 +19,12 @@ public interface ParkingLevelDataDAO<T extends Vehicle>
 	
 	public List<String> getStatus();
 	
+	public List<String> getRegNumberForColor(String color);
+	
+	public List<Integer> getSlotNumbersFromColor(String colour);
+	
+	public int getAvailableSlotsCount();
+	
 	public void doCleanUp();
 	
 }

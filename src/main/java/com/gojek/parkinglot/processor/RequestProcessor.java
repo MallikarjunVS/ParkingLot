@@ -62,10 +62,10 @@ public class RequestProcessor implements IAbstractProcessor
 				parkingService.getStatus(level);
 				break;
 			case Constants.REG_NUMBER_FOR_CARS_WITH_COLOR:
-				// TODO
+				parkingService.getRegNumberForColor(level, inputs[1]);
 				break;
 			case Constants.SLOTS_NUMBER_FOR_CARS_WITH_COLOR:
-				// TODO
+				parkingService.getSlotNumbersFromColor(level, inputs[1]);
 				break;
 			case Constants.SLOTS_NUMBER_FOR_REG_NUMBER:
 				// TODO

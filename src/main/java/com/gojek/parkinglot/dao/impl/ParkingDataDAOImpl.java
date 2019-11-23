@@ -75,6 +75,23 @@ public class ParkingDataDAOImpl<T extends Vehicle> implements ParkingDataDAO<T>
 		return levelParkingMap.get(level).getStatus();
 	}
 	
+	public int getAvailableSlotsCount(int level)
+	{
+		return levelParkingMap.get(level).getAvailableSlotsCount();
+	}
+	
+	@Override
+	public List<String> getRegistrationNumberForColor(int level, String color)
+	{
+		return levelParkingMap.get(level).getRegNumberForColor(color);
+	}
+	
+	@Override
+	public List<Integer> getSlotNumbersFromColor(int level, String color)
+	{
+		return levelParkingMap.get(level).getSlotNumbersFromColor(color);
+	}
+	
 	public Object clone() throws CloneNotSupportedException
 	{
 		throw new CloneNotSupportedException();

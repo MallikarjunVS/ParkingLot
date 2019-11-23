@@ -125,6 +125,36 @@ public class ParkingLevelDataDAOImpl<T extends Vehicle> implements ParkingLevelD
 		return availability.get();
 	}
 	
+	@Override
+	public List<String> getRegNumberForColor(String color)
+	{
+		List<String> statusList = new ArrayList<>();
+		for (int i = 1; i <= capacity.get(); i++)
+		{
+			Optional<T> vehicle = slotVehicleMap.get(i);
+			if (vehicle.isPresent() && color.equalsIgnoreCase(vehicle.get().getColor()))
+			{
+				statusList.add(vehicle.get().getVehicleRegNo());
+			}
+		}
+		return statusList;
+	}
+	
+	@Override
+	public List<Integer> getSlotNumbersFromColor(String colour)
+	{
+		List<Integer> slotList = new ArrayList<>();
+		for (int i = 1; i <= capacity.get(); i++)
+		{
+			Optional<T> vehicle = slotVehicleMap.get(i);
+			if (vehicle.isPresent() && colour.equalsIgnoreCase(vehicle.get().getColor()))
+			{
+				slotList.add(i);
+			}
+		}
+		return slotList;
+	}
+	
 	public Object clone() throws CloneNotSupportedException
 	{
 		throw new CloneNotSupportedException();

@@ -61,5 +61,65 @@ public class TestMain
 		instance.doCleanup();
 	}
 	
+	@Test
+	public void alreadyExistParkingLot() throws Exception
+	{
+		IParkingLotService instance = new ParkingLotServiceImpl();
+		instance.createParkingLot(parkingLevel, 65);
+		assertTrue("createdparkinglotwith65slots".equalsIgnoreCase(outContent.toString().trim().replace(" ", "")));
+		thrown.expect(ParkingLotException.class);
+		thrown.expectMessage(is(ErrorCode.PARKING_ALREADY_EXIST.getMessage()));
+		instance.createParkingLot(parkingLevel, 65);
+		instance.doCleanup();
+	}
+	
+	@Test
+	public void testParkingLotCapacity() throws Exception
+	{
+		IParkingLotService instance = new ParkingLotServiceImpl();
+		thrown.expect(ParkingLotException.class);
+		thrown.expectMessage(is(ErrorCode.PARKING_NOT_EXIST_ERROR.getMessage()));
+		instance.parkVehicle(parkingLevel, new Car("KA-01-HH-1234", "White"));
+		assertEquals("Sorry,CarParkingDoesnotExist", outContent.toString().trim().replace(" ", ""));
+		instance.createParkingLot(parkingLevel, 11);
+		instance.parkVehicle(parkingLevel, new Car("KA-01-HH-1234", "White"));
+		instance.parkVehicle(parkingLevel, new Car("KA-01-HH-9999", "White"));
+		instance.parkVehicle(parkingLevel, new Car("KA-01-BB-0001", "Black"));
+		assertEquals(3, instance.getAvailableSlotsCount(parkingLevel));
+		instance.doCleanup();
+	}
+	
+	@Test
+	public void testEmptyParkingLot() throws Exception
+	{
+		IParkingLotService instance = new ParkingLotServiceImpl();
+		thrown.expect(ParkingLotException.class);
+		thrown.expectMessage(is(ErrorCode.PARKING_NOT_EXIST_ERROR.getMessage()));
+		instance.getStatus(parkingLevel);
+		assertTrue("Sorry,CarParkingDoesnotExist".equalsIgnoreCase(outContent.toString().trim().replace(" ", "")));
+		instance.createParkingLot(parkingLevel, 6);
+		instance.getStatus(parkingLevel);
+		assertTrue(
+				"Sorry,CarParkingDoesnotExist\ncreatedparkinglotwith6slots\nSlotNo.\tRegistrationNo.\tColor\nSorry,parkinglotisempty."
+						.equalsIgnoreCase(outContent.toString().trim().replace(" ", "")));
+		instance.doCleanup();
+	}
+	
+	@Test
+	public void testParkingLotIsFull() throws Exception
+	{
+		IParkingLotService instance = new ParkingLotServiceImpl();
+		thrown.expect(ParkingLotException.class);
+		thrown.expectMessage(is(ErrorCode.PARKING_NOT_EXIST_ERROR.getMessage()));
+		instance.parkVehicle(parkingLevel, new Car("KA-01-HH-1234", "White"));
+		assertEquals("Sorry,CarParkingDoesnotExist", outContent.toString().trim().replace(" ", ""));
+		instance.createParkingLot(parkingLevel, 2);
+		instance.parkVehicle(parkingLevel, new Car("KA-01-HH-1234", "White"));
+		instance.parkVehicle(parkingLevel, new Car("KA-01-HH-9999", "White"));
+		instance.parkVehicle(parkingLevel, new Car("KA-01-BB-0001", "Black"));
+		assertTrue("createdparkinglotwith2slots\\nAllocatedslotnumber:1\nAllocatedslotnumber:2\nSorry,parkinglotisfull"
+				.equalsIgnoreCase(outContent.toString().trim().replace(" ", "")));
+		instance.doCleanup();
+	}
 	
 }

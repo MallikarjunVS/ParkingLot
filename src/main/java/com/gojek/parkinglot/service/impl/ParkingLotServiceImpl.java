@@ -6,6 +6,7 @@ package com.gojek.parkinglot.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.gojek.parkinglot.constants.Constants;
@@ -137,11 +138,80 @@ public class ParkingLotServiceImpl implements IParkingLotService
 		}
 	}
 	
+	public Optional<Integer> getAvailableSlotsCount(int level) throws ParkingLotException
+	{
+		lock.readLock().lock();
+		Optional<Integer> value = Optional.empty();
+		validateParkingLot();
+		try
+		{
+			value = Optional.of(parkingDataDAO.getAvailableSlotsCount(level));
+		}
+		catch (Exception e)
+		{
+			throw new ParkingLotException(ErrorCode.PROCESSING_ERROR.getMessage(), e);
+		}
+		finally
+		{
+			lock.readLock().unlock();
+		}
+		return value;
+	}
+	
+	@Override
+	public void getRegNumberForColor(int level, String color) throws ParkingLotException
+	{
+		lock.readLock().lock();
+		validateParkingLot();
+		try
+		{
+			List<String> registrationList = parkingDataDAO.getRegistrationNumberForColor(level, color);
+			if (registrationList.size() == 0)
+				System.out.println("Not Found");
+			else
+				System.out.println(String.join(",", registrationList));
+		}
+		catch (Exception e)
+		{
+			throw new ParkingLotException(ErrorCode.PROCESSING_ERROR.getMessage(), e);
+		}
+		finally
+		{
+			lock.readLock().unlock();
+		}
+	}
+	
+	@Override
+	public void getSlotNumbersFromColor(int level, String color) throws ParkingLotException
+	{
+		lock.readLock().lock();
+		validateParkingLot();
+		try
+		{
+			List<Integer> slotList = parkingDataDAO.getSlotNumbersFromColor(level, color);
+			if (slotList.size() == 0)
+				System.out.println("Not Found");
+			StringJoiner joiner = new StringJoiner(",");
+			for (Integer slot : slotList)
+			{
+				joiner.add(slot + "");
+			}
+			System.out.println(joiner.toString());
+		}
+		catch (Exception e)
+		{
+			throw new ParkingLotException(ErrorCode.PROCESSING_ERROR.getMessage(), e);
+		}
+		finally
+		{
+			lock.readLock().unlock();
+		}
+	}
+	
 	@Override
 	public void doCleanup()
 	{
 		if (parkingDataDAO != null)
 			parkingDataDAO.doCleanup();
 	}
-	
 }
