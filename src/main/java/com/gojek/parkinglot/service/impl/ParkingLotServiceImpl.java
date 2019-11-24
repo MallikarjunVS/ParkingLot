@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.gojek.parkinglot.constants.Constants;
 import com.gojek.parkinglot.dao.ParkingDataDAO;
 import com.gojek.parkinglot.dao.impl.ParkingDataDAOImpl;
@@ -27,12 +29,18 @@ import com.gojek.parkinglot.service.IParkingLotService;
  */
 public class ParkingLotServiceImpl implements IParkingLotService
 {
+	@Autowired
 	private ParkingDataDAO<Vehicle> parkingDataDAO = null;
+	
+	@SuppressWarnings("rawtypes")
+	@Autowired
+	private ParkingDataDAOImpl parkingDataDAOImpl;
 	
 	// A read-write lock will improve performance over the use of a mutual exclusion
 	// lock if the frequency of vehicle
 	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	
+	@SuppressWarnings("static-access")
 	@Override
 	public void createParkingLot(int level, int capacity) throws ParkingLotException
 	{
@@ -44,7 +52,7 @@ public class ParkingLotServiceImpl implements IParkingLotService
 		parkingLevels.add(level);
 		capacityList.add(capacity);
 		parkingStrategies.add(new NearestParkingLotStrategy());
-		this.parkingDataDAO = ParkingDataDAOImpl.getInstance(parkingLevels, capacityList, parkingStrategies);
+		this.parkingDataDAO = parkingDataDAOImpl.getInstance(parkingLevels, capacityList, parkingStrategies);
 		System.out.println("Created parking lot with " + capacity + " slots");
 	}
 	
@@ -206,6 +214,28 @@ public class ParkingLotServiceImpl implements IParkingLotService
 		{
 			lock.readLock().unlock();
 		}
+	}
+	
+	@Override
+	public int getSlotNoFromRegistrationNo(int level, String registrationNo) throws ParkingLotException
+	{
+		int value = -1;
+		lock.readLock().lock();
+		validateParkingLot();
+		try
+		{
+			value = parkingDataDAO.getSlotNoFromRegistrationNo(level, registrationNo);
+			System.out.println(value != -1 ? value : "Not Found");
+		}
+		catch (Exception e)
+		{
+			throw new ParkingLotException(ErrorCode.PROCESSING_ERROR.getMessage(), e);
+		}
+		finally
+		{
+			lock.readLock().unlock();
+		}
+		return value;
 	}
 	
 	@Override

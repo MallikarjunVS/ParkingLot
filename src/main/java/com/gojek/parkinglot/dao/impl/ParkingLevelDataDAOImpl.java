@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.gojek.parkinglot.constants.Constants;
 import com.gojek.parkinglot.dao.ParkingLevelDataDAO;
 import com.gojek.parkinglot.model.Vehicle;
@@ -31,11 +33,13 @@ public class ParkingLevelDataDAOImpl<T extends Vehicle> implements ParkingLevelD
 	private AtomicInteger	capacity		= new AtomicInteger();
 	private AtomicInteger	availability	= new AtomicInteger();
 	// Allocation Strategy for parking
+	@Autowired
 	private ParkingStrategy parkingStrategy;
 	// this is per level - slot - vehicle
 	private Map<Integer, Optional<T>> slotVehicleMap;
 	
 	@SuppressWarnings("rawtypes")
+	@Autowired
 	private static ParkingLevelDataDAOImpl instance = null;
 	
 	@SuppressWarnings("unchecked")
@@ -153,6 +157,21 @@ public class ParkingLevelDataDAOImpl<T extends Vehicle> implements ParkingLevelD
 			}
 		}
 		return slotList;
+	}
+	
+	@Override
+	public int getSlotNoFromRegistrationNo(String registrationNo)
+	{
+		int result = Constants.NOT_FOUND;
+		for (int i = 1; i <= capacity.get(); i++)
+		{
+			Optional<T> vehicle = slotVehicleMap.get(i);
+			if (vehicle.isPresent() && registrationNo.equalsIgnoreCase(vehicle.get().getVehicleRegNo()))
+			{
+				result = i;
+			}
+		}
+		return result;
 	}
 	
 	public Object clone() throws CloneNotSupportedException

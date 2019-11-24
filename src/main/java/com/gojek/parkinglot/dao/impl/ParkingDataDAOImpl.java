@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.gojek.parkinglot.dao.ParkingDataDAO;
 import com.gojek.parkinglot.dao.ParkingLevelDataDAO;
 import com.gojek.parkinglot.model.Vehicle;
@@ -24,6 +26,7 @@ public class ParkingDataDAOImpl<T extends Vehicle> implements ParkingDataDAO<T>
 	private Map<Integer, ParkingLevelDataDAO<T>> levelParkingMap;
 	
 	@SuppressWarnings("rawtypes")
+	@Autowired
 	private static ParkingDataDAOImpl instance = null;
 	
 	@SuppressWarnings("unchecked")
@@ -90,6 +93,12 @@ public class ParkingDataDAOImpl<T extends Vehicle> implements ParkingDataDAO<T>
 	public List<Integer> getSlotNumbersFromColor(int level, String color)
 	{
 		return levelParkingMap.get(level).getSlotNumbersFromColor(color);
+	}
+	
+	@Override
+	public int getSlotNoFromRegistrationNo(int level, String registrationNo)
+	{
+		return levelParkingMap.get(level).getSlotNoFromRegistrationNo(registrationNo);
 	}
 	
 	public Object clone() throws CloneNotSupportedException

@@ -29,5 +29,7 @@ public interface IParkingLotService extends IAbstractService
 	
 	public void getSlotNumbersFromColor(int level, String colour) throws ParkingLotException;
 	
+	public int getSlotNoFromRegistrationNo(int level, String registrationNo) throws ParkingLotException;
+	
 	public void doCleanup();
 }
